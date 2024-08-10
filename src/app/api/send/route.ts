@@ -1,20 +1,19 @@
 import { resend } from "@/lib/resend";
-import VerificationEmail from "../../emails/VerificationEmail";
+import VerificationEmail from "@/../emails/VerificationEmail";
 import { ApiResponse } from '@/types/ApiResponse';
 
-export async function sendVerificationEmail(
+export async function POST(
   email: string,
   username: string,
   verifyCode: string
 ): Promise<ApiResponse> {
   try {
-    const resendResponse = await resend.emails.send({
-      from: 'Resend <jsaugatt02@gmail.com>',
-      to: [email],
+    await resend.emails.send({
+      from: 'Acme <onboarding@resend.dev>',
+      to: email,
       subject: 'Mystery Message Verification Code',
       react: VerificationEmail({ username, otp: verifyCode }),
     });
-    console.log('resendResponse >>> ', resendResponse)
     return { success: true, message: 'Verification email sent successfully.' };
   } catch (emailError) {
     console.error('Error sending verification email:', emailError);

@@ -11,14 +11,17 @@ export async function GET(request: Request) {
   await dbConnect();
 
   try {
+    // extract username ffrom the current url which may look similar to localhost:3000/api/xxx?username=example
     const { searchParams } = new URL(request.url);
     const queryParams = {
       username: searchParams.get('username'),
     };
 
-    const result = UsernameQuerySchema.safeParse(queryParams);
+    // validate with zod
+    const result = UsernameQuerySchema.safeParse(queryParams); // queryParams must have a property named 'username'
 
     if (!result.success) {
+      // extracting only errors of username in the whole object
       const usernameErrors = result.error.format().username?._errors || [];
       return Response.json(
         {
